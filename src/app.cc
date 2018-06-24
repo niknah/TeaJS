@@ -73,6 +73,8 @@ JS_METHOD(_exit) {
 	args.GetReturnValue().SetUndefined();
 }
 
+static bool v8InitDone=0;
+
 /**
  * To be executed only once - initialize stuff
  */
@@ -81,12 +83,15 @@ void TeaJS_App::init() {
 	this->show_errors = false;
 	this->exit_code = 0;
 
-	v8::V8::InitializeICU();
+	if(!v8InitDone) {
+		v8::V8::InitializeICU();
 
-  this->platform = v8::platform::CreateDefaultPlatform();
-  v8::V8::InitializePlatform(this->platform);
+		this->platform = v8::platform::CreateDefaultPlatform();
+		v8::V8::InitializePlatform(this->platform);
+		v8::V8::Initialize();
+		v8InitDone=1;
+	}
 
-	v8::V8::Initialize();
 
 	this->isolate = v8::Isolate::New();
 	this->isolate->Enter();

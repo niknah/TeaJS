@@ -3274,6 +3274,7 @@ class BaseShape {
 template<typename Derived, typename Shape, typename Key>
 class HashTable: public FixedArray {
  public:
+	 /*
   // Wrapper methods
   inline uint32_t Hash(Key key) {
     if (Shape::UsesSeed) {
@@ -3290,6 +3291,12 @@ class HashTable: public FixedArray {
       return Shape::HashForObject(key, object);
     }
   }
+  */
+  // Wrapper methods.  Defined in src/objects-inl.h
+  // to break a cycle with src/heap/heap.h.
+  inline uint32_t Hash(Key key);
+  inline uint32_t HashForObject(Key key, Object* object);
+
 
   // Returns the number of elements in the hash table.
   int NumberOfElements() {

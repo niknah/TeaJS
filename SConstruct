@@ -6,7 +6,7 @@ bsd = sys.platform.find("bsd") != -1
 def build_v8_native(env):
 	v8_path = env["v8_path"]
 	LDFLAGS=""
-	CFLAGS="-fPIC"
+	CFLAGS="-fPIC -Wno-unused-local-typedefs -Wno-strict-overflow -Wno-unused-but-set-variable -Wno-narrowing -Wno-unused-variable -Wno-expansion-to-defined -Wno-implicit-fallthrough -Wno-unused-function -Wno-dangling-else -Wno-shift-negative-value -w -Wno-expansion-to-defined"
 	GYP_LIBTOOLFLAGS=""
 	I18N=""
 	if env["i18n"] == 0:
@@ -16,7 +16,7 @@ def build_v8_native(env):
 		CFLAGS+=" -fvisibility=default"
 		GYP_LIBTOOLFLAGS+=" -sc"
 	v8 = env.Command(v8_path, "",
-	 "make CFLAGS='" + CFLAGS + "' CXXFLAGS='" + CFLAGS + "' LDFLAGS='" + LDFLAGS + "' CC=" + env["CC"] + " CXX=" + env["CXX"] + " LINK=" + env["CXX"] +" GYP_LIBTOOLFLAGS='" + GYP_LIBTOOLFLAGS + "' -C "+ v8_path +" component=static_library " + I18N + " native")
+	 "make CFLAGS='" + CFLAGS + "' CXXFLAGS='" + CFLAGS + "' LDFLAGS='" + LDFLAGS + "' CC=" + env["CC"] + " CXX=" + env["CXX"] + " LINK=" + env["CXX"] +" GYP_LIBTOOLFLAGS='" + GYP_LIBTOOLFLAGS + "' -C "+ v8_path +" component=static_library " + I18N + " x64.debug")
 	env.AlwaysBuild(v8)
 #def
 
@@ -526,31 +526,31 @@ if env["binary_b"] == 1: build_binary_b(env_lib)
 if env["os"] != "darwin":
 	I18N=[]
 	if env["i18n"] == 1:
-		I18N=[env["v8_path"] + "/out/native/obj.target/third_party/icu/libicuuc.a",
-      env["v8_path"] + "/out/native/obj.target/third_party/icu/libicui18n.a",
-      env["v8_path"] + "/out/native/obj.target/third_party/icu/libicudata.a"]
+		I18N=[env["v8_path"] + "/out/x64.debug/obj.target/third_party/icu/libicuuc.a",
+      env["v8_path"] + "/out/x64.debug/obj.target/third_party/icu/libicui18n.a",
+      env["v8_path"] + "/out/x64.debug/obj.target/third_party/icu/libicudata.a"]
 	env.Append(LINKFLAGS = ["-Wl,--export-dynamic"])
 	env.Append(_LIBFLAGS = ["-Wl,--whole-archive", "-Wl,--start-group"])
 	env.Append(
-		_LIBFLAGS= [env["v8_path"] + "/out/native/obj.target/tools/gyp/libv8_base.a",
-			env["v8_path"] + "/out/native/obj.target/tools/gyp/libv8_libbase.a",
-			env["v8_path"] + "/out/native/obj.target/tools/gyp/libv8_snapshot.a",
-			env["v8_path"] + "/out/native/obj.target/tools/gyp/libv8_libplatform.a"]
+		_LIBFLAGS= [env["v8_path"] + "/out/x64.debug/obj.target/tools/gyp/libv8_base.a",
+			env["v8_path"] + "/out/x64.debug/obj.target/tools/gyp/libv8_libbase.a",
+			env["v8_path"] + "/out/x64.debug/obj.target/tools/gyp/libv8_snapshot.a",
+			env["v8_path"] + "/out/x64.debug/obj.target/tools/gyp/libv8_libplatform.a"]
 			+ I18N
 		)
 	env.Append(_LIBFLAGS = ["-Wl,--end-group", "-Wl,--no-whole-archive"])
 else:
 	I18N=[]
 	if env["i18n"] == 1:
-		I18N=[env["v8_path"] + "/out/native/libicuuc.a",
-      env["v8_path"] + "/out/native/libicui18n.a",
-      env["v8_path"] + "/out/native/libicudata.a"]
+		I18N=[env["v8_path"] + "/out/x64.debug/libicuuc.a",
+      env["v8_path"] + "/out/x64.debug/libicui18n.a",
+      env["v8_path"] + "/out/x64.debug/libicudata.a"]
 	env.Append(LINKFLAGS = ["-Wl,-export_dynamic", "-Wl,-all_load", "-fvisibility=default"])
 	env.Append(
-		_LIBFLAGS= [env["v8_path"] + "/out/native/libv8_base.a",
-			env["v8_path"] + "/out/native/libv8_libbase.a",
-			env["v8_path"] + "/out/native/libv8_snapshot.a",
-			env["v8_path"] + "/out/native/libv8_libplatform.a"] + I18N
+		_LIBFLAGS= [env["v8_path"] + "/out/x64.debug/libv8_base.a",
+			env["v8_path"] + "/out/x64.debug/libv8_libbase.a",
+			env["v8_path"] + "/out/x64.debug/libv8_snapshot.a",
+			env["v8_path"] + "/out/x64.debug/libv8_libplatform.a"] + I18N
 		)
 
 if env["module"] == 1: build_module(env, sources)
