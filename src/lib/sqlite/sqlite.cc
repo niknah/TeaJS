@@ -2,7 +2,7 @@
 #include "macros.h"
 #include "gc.h"
 
-#include <sqlite.h>
+#include <sqlite3.h>
 
 #define SQLITE_PTR sqlite3 * db = LOAD_PTR(0, sqlite3 *)
 #define SQLITE_ERRMSG sqlite3_errmsg(db)
