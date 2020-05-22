@@ -40,6 +40,9 @@ public:
 	size_t write(const char * data, size_t size) {
 		return ap_rwrite(data, size, this->request);
 	}
+	size_t flush() {
+		return ap_rflush(this->request);
+	}
 	
 	void error(const char * data) {
 	#ifdef APLOG_USE_MODULE
@@ -124,6 +127,13 @@ JS_METHOD(_read) {
 	args.GetReturnValue().Set(result);
 }
 
+JS_METHOD(_flush) {
+	TeaJS_Module * app = (TeaJS_Module *) APP_PTR;
+
+	size_t result;
+	result = app->flush();
+	args.GetReturnValue().Set(JS_INT(result));
+}
 JS_METHOD(_write) {
 	TeaJS_Module * app = (TeaJS_Module *) APP_PTR;
 	if (args.Length() < 1) { JS_TYPE_ERROR("Invalid call format. Use 'apache.write(data)'"); return; }
@@ -165,6 +175,7 @@ void TeaJS_Module::prepare(char ** envp) {
 	apache->Set(JS_STR("header"), v8::FunctionTemplate::New(JS_ISOLATE, _header)->GetFunction());
 	apache->Set(JS_STR("read"), v8::FunctionTemplate::New(JS_ISOLATE, _read)->GetFunction());
 	apache->Set(JS_STR("write"), v8::FunctionTemplate::New(JS_ISOLATE, _write)->GetFunction());
+	apache->Set(JS_STR("flush"), v8::FunctionTemplate::New(JS_ISOLATE, _flush)->GetFunction());
 	apache->Set(JS_STR("error"), v8::FunctionTemplate::New(JS_ISOLATE, _error)->GetFunction());
 }
 
